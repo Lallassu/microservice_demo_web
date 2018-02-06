@@ -11,12 +11,12 @@ node {
 
     stage('Test image') {
         app.inside {
-            sh 'echo "Tests passed"'
+            sh 'cd /webapp && rails test'
         }
     }
 
     stage('Push image') {
-        docker.withRegistry('https://registry.hub.docker.com', 'docker-hub-credentials') {
+        docker.withRegistry('http://10.67.228.80:5000', '') {
             app.push("${env.BUILD_NUMBER}")
             app.push("latest")
         }
