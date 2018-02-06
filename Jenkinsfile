@@ -6,7 +6,11 @@ node {
     }
 
     stage('Build image') {
-        app = docker.build("webapp")
+        docker.withServer('unix:///var/run/docker.sock', '') {
+            docker.image('ruby:latest').withRun('-p 8080:80') {c ->
+                sh "curl -i http://${hostIp(c)}:8080/"
+            }
+        }
     }
 
     stage('Test image') {
