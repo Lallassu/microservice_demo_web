@@ -5,24 +5,25 @@ node {
         checkout scm
     }
 
-    stage('Prepare') {
-        sh 'echo "SUCCESS"'
-    }
-
     stage('Build image') {
         docker.withServer('unix:///var/run/docker.sock', '') {
-            docker.image('ruby:2.4.1').withRun('-p 9081:80') {c ->
-                sh 'echo "SUCCESS DOCKER RUN"'
-            }
+          app = docker.build('webapp')
+          app.inside {
+            sh 'cd /webapp && rails test'
+          }
         }
     }
 
     stage('Test image') {
-        sh 'echo "SUCCESS"'
+        docker.withServer('unix:///var/run/docker.sock', '') {
+            docker.image('webapp:latest').withRun('-p 9081:80') {c ->
+                sh 'curl localhost:9081'
+            }
+         }
     }
 
     stage('Push image') {
-        docker.withRegistry('http://10.67.228.80:5000', '') {
+        docker.withRegistry('10.67.228.80:5000', '') {
             app.push("${env.BUILD_NUMBER}")
             app.push("latest")
         }
