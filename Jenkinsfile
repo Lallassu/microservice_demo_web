@@ -16,7 +16,7 @@ node {
 
     stage('Test image') {
         docker.withServer('unix:///var/run/docker.sock', '') {
-            docker.image('webapp:latest').withRun('-p 9081:80') {c ->
+            docker.image('webapp:latest').withRun('-p 9081:3000') {c ->
                 sh 'curl localhost:9081'
             }
          }
