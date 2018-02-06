@@ -9,7 +9,7 @@ node {
         docker.withServer('unix:///var/run/docker.sock', '') {
           app = docker.build('webapp')
           app.inside {
-            sh 'cd /webapp && rails test'
+            sh 'cd /webapp && /webapp/bin/rails test'
           }
         }
     }
