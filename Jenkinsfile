@@ -8,16 +8,21 @@ node {
     stage('Build image') {
         docker.withServer('unix:///var/run/docker.sock', '') {
           app = docker.build('webapp')
-          app.inside {
-            sh 'cd /webapp && /webapp/bin/rails test'
-          }
         }
     }
 
-    stage('Test image') {
+    stage('Run test-cases') {
+          app.inside {
+            sh 'cd /webapp && /webapp/bin/rails test'
+          }
+    }
+
+    stage('Run http test') {
         docker.withServer('unix:///var/run/docker.sock', '') {
             docker.image('webapp:latest').withRun('-p 9081:3000') {c ->
-                sh 'curl localhost:9081'
+                app.inside {
+                    sh 'curl http://localhost:3000'
+                }
             }
          }
     }
