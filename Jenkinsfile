@@ -5,10 +5,14 @@ node {
         checkout scm
     }
 
+    stage('Prepare') {
+        sh 'echo "SUCCESS"'
+    }
+
     stage('Build image') {
         docker.withServer('unix:///var/run/docker.sock', '') {
-            docker.image('ruby:latest').withRun('-p 8081:80') {c ->
-                sh "curl -i http://${hostIp(c)}:8081/"
+            docker.image('ruby:2.4.1').withRun('-p 9081:80') {c ->
+                sh "curl -i http://${hostIp(c)}:9081/"
             }
         }
     }
