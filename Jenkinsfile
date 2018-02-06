@@ -20,8 +20,8 @@ node {
     stage('Run http test') {
         docker.withServer('unix:///var/run/docker.sock', '') {
             docker.image('webapp:latest').withRun('-p 3000:3000') {c ->
-                sh 'curl http://localhost:3000'
                 sh 'curl http://10.67.228.80:3000'
+                sh 'curl http://localhost:3000'
             }
          }
     }
