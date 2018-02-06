@@ -8,4 +8,4 @@ RUN apt update -y && \
     gem install bundle && \
     bundle install
 
-#CMD ["cd /webapp && rails s"]
+CMD ["cd /webapp && rails s"]
