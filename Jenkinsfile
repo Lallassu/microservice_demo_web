@@ -27,7 +27,7 @@ node {
     }
 
     stage('Push image') {
-        docker.withRegistry('10.67.228.80:5000', '') {
+        docker.withRegistry('unix://10.67.228.80:5000', '') {
             app.push("${env.BUILD_NUMBER}")
             app.push("latest")
         }
