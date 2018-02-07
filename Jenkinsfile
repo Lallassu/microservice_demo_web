@@ -1,13 +1,7 @@
 node {
     def app
-    echo "${env.HOST_IP}"
-    echo "${withEnv.HOST_IP}"
-    sh 'echo ${HOST_IP}'
-    sh 'env'
-
 
     stage('Clone repository') {
-        sh "echo '${env.HOST_IP}'"
         checkout scm
     }
 
@@ -28,13 +22,13 @@ node {
         docker.withServer('unix:///var/run/docker.sock', '') {
             docker.image('webapp:latest').withRun('-p 3000:3000') {c ->
                 sleep 3
-                sh 'curl http://10.67.228.80:3000 &> /dev/null'
+                sh 'curl http://${env.HOST_IP}:3000 &> /dev/null'
             }
          }
     }
 
   stage('Push image') {
-        docker.withRegistry('https://10.67.228.80:5000', '') {
+        docker.withRegistry('https://${env.HOST_IP}:5000', '') {
             app.push("${env.BUILD_NUMBER}")
             app.push("latest")
         }
