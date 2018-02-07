@@ -38,10 +38,10 @@ node {
       // Check if service runs, then perform rolling upgrade, else deploy.
       if (expression{ sh "curl http://${env.HOST_IP} &> /dev/null" == 0}) {
           echo "Performing rolling upgrade of service."
-          sh "docker service update --image webapp:latest webapp"
+          sh "docker service update --image ${env.HOST_IP}:5000/webapp:latest webapp"
       } else {
           echo "Performing deploy of service."
-          sh "docker service create --replicas 2 -p 80:3000 --name webapp webapp:latest"
+          sh "docker service create --replicas 2 -p 80:3000 --name webapp ${env.HOST_IP}:5000/webapp:latest"
       }
   }
 
