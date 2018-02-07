@@ -35,11 +35,18 @@ node {
     }
 
   stage('Deploy To Swarm') {
-      sh "docker service create --replicas 2 -p 80:3000 --name webapp webapp:latest"
+      // Check if service runs, then perform rolling upgrade, else deploy.
+      if(sh "curl http://${env.HOST_IP} &> /dev/null" != 0) {
+          echo "Performing deploy of service."
+          sh "docker service create --replicas 2 -p 80:3000 --name webapp webapp:latest"
+      } else {
+          echo "Performing rolling upgrade of service."
+          sh "docker service update --image webapp:latest webapp"
+      }
   }
 
   stage('Verify Deployment') {
-    sh "curl http://${env.HOST_ip}/ &> /dev/null"
+    sh "curl http://${env.HOST_IP}/ &> /dev/null"
   }
 
 }
