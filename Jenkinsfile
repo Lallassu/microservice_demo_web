@@ -1,7 +1,9 @@
 node {
     def app
+    env.HOST_IP = 'sh "echo ${HOST_IP}"'
 
     stage('Clone repository') {
+        sh "echo '${env.HOST_IP}'"
         checkout scm
     }
 
