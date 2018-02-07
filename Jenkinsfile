@@ -1,8 +1,9 @@
 node {
     def app
-    env.HOST_IP = ${HOST_IP}
-    echo "${HOST_IP}"
+    echo "${envVars.HOST_IP}"
+    echo "${environment.HOST_IP}"
     echo "${env.HOST_IP}"
+    echo "${withEnv.HOST_IP}"
     sh 'echo ${HOST_IP}'
     sh 'env'
 
