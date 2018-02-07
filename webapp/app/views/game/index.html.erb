@@ -1,0 +1,240 @@
+<html>
+<head>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+<link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<style>
+body {
+    color: #FFFFFF;
+    background: #5588AA;
+}
+.container {
+    margin-top: 10px;   
+}
+a {
+    color: #FFFFFF;
+}
+
+.sc {
+    max-width: 255px;
+    min-width: 255px;
+    max-height: 150px;
+    min-height: 150px;
+    box-shadow: 1px 3px 4px #000000;
+    margin: 5px;
+}
+
+@import url(http://fonts.googleapis.com/css?family=Roboto:400);
+
+.form-login {
+    padding-top: 1px;
+    padding-bottom: 10px;
+    padding-left: 50px;
+    padding-right: 50px;
+    border-radius: 5px;
+    border-color:#d2d2d2;
+    border-width: 5px;
+}
+
+h4 { 
+    border:0 solid #fff; 
+    border-bottom-width:1px;
+    padding-bottom:10px;
+    text-align: center;
+}
+
+.form-control {
+    border-radius: 5px;
+}
+
+.wrapper {
+    text-align: center;
+}
+
+.link img{
+    width: 30px;
+    height: 30px;
+}
+
+</style>
+<title>Bad Santa - Multiplayer HTML5 Game</title>
+</head>
+<body>
+<a href="https://github.com/lallassu/badsanta"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/52760788cde945287fbb584134c4cbc2bc36f904/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f77686974655f6666666666662e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_white_ffffff.png"></a>
+
+<div class="container">
+    <h1>BadSanta </h1>
+        <p>served by docker container:<span style="color: #000000;"> <%= @ip %></span></small></p>
+    <div class="row marketing">
+        <div class="col-lg-6">
+            <h2 class="page-header">Login</h2>
+            <div class="form-login" id="login">
+            <p>If the account does not exists, a new player will be created.</p>
+                <input type="text" id="user" class="form-control input-sm chat-input" placeholder="player" />
+                </br>
+                <input type="password" id="pass" class="form-control input-sm chat-input" placeholder="password" />
+                </br>
+                <div class="wrapper">
+                    <span class="group-btn">     
+                        <button onclick="javascript:login();" class="btn btn-primary btn-lg">Enter The Winter War! <i class="fa fa-sign-in"></i></button>
+                    </span>
+                    <br>
+                    <span style="color: #FF0000;" id="login_error"></span> 
+                </div>
+            </div>
+            <span id="logged_in"></span><br> 
+            <span style="display: none;" id="player_id"></span> 
+            <div style="display:none;" id="logout"><button class="btn btn-danger btn-sm" onclick="javascript:logout();">Logout</button></div>
+        </div>
+
+        <div class="col-lg-6">
+            <h2 class="page-header">Servers</h2>
+            <div id="servers">
+                
+            </div>
+        </div>
+        <div class="col-lg-12">
+            <h2 class="page-header">Top 20 Naughty Santas</h2>
+            <table class="table table-condensed">
+                <thead>
+                    <tr>
+                        <th>Position</th>
+                        <th>Player</th>
+                        <th>Kills</th>
+                        <th>Deaths</th>
+                        <th>Created</th>
+                        <th>Last Played</th>
+                    </tr>
+                </thead>
+                <tbody id="toplist">
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <footer class="text-center footer">
+    </footer>
+
+</div> <!-- /container -->
+<script>
+function logout() {
+    delete window.localStorage["p"]
+    delete window.localStorage["u"]
+    $("#login").show();
+    $("#logged_in").hide();
+    $("#login_error").hide();
+    $("#player_id").html();
+    $("#logout").hide();
+    $('.join').each(function() {
+        $(this).hide();
+    });
+}
+
+function join_server(hostname) {
+    window.location = "http://"+hostname+"?id="+$("#player_id").text();
+}
+
+function login() {
+    var u = $("#user").val();
+    var p = $("#pass").val();
+    $.ajax({
+        type: "POST",
+        url: "login",
+        data: {user:  u, pass: p},
+        success: function(data){
+            if(data.status == true) {
+                $("#login").hide();
+                var t = "Logged in as player <span style='color: #00FF00;'>"+u+"</span><br>";
+                t += "Kills: <span style='color: #5555FF;'>"+data.kills+"</span><br>";
+                t += "Deaths: <span style='color: #FF0000;'>"+data.deaths+"</span><br>";
+                t += "Last played: <span style='color: #AAAAAA;'>"+data.last_played+"</span><br>";
+                t += "Account created: <span style='color: #AAAAAA;'>"+data.created+"</span><br>";
+                $("#logged_in").html(t);
+                $("#logged_in").show();
+                $("#logout").show();
+                $("#player_id").html(data.id);
+                localStorage.setItem('u', u)
+                localStorage.setItem('p', p)
+                $('.join').each(function() {
+                    $(this).show();
+                });
+            } else {
+                $("#login_error").html("Failed to login.");
+                $("#login_error").show();
+            }
+        },
+    });
+}
+
+$(document).ready(function() {
+    var u = localStorage.getItem('u')
+    var p = localStorage.getItem('p')
+    if(u && p) {
+        $('#user').val(u);
+        $('#pass').val(p);
+        login();
+    }
+
+    getTopList();
+    setInterval(function() {
+        getTopList();
+    }, 5000);
+    function getTopList() {
+        $.ajax({
+            type: "GET",
+            url: "toplist",
+            success: function(data) {
+                if (!data) {
+                    return;
+                }
+                var d = "";
+                for(var i = 0; i < data.length; i++) {
+                    d += "<tr>";
+                    d += "<td>"+(i+1)+"</td>";
+                    d += "<td>"+data[i].name+"</td>";
+                    d += "<td style='color: #5555FF;'>"+data[i].kills+"</td>";
+                    d += "<td style='color: #FF0000;'>"+data[i].deaths+"</td>";
+                    d += "<td>"+data[i].created+"</td>";
+                    d += "<td>"+data[i].last_played+"</td>";
+                    d += "</tr>";
+                }
+                $("#toplist").html(d);
+            },
+            error: function(e) {
+            }
+        });
+    }
+
+    getServers();
+    setInterval(function() {
+        getServers();
+    }, 3000);
+
+    function getServers() {
+        $.ajax({
+            type: "GET",
+            url: "servers",
+            success: function(data) {
+                var d = "";
+                if (!data) {
+                    return;
+                }
+                for(var i = 0; i < data.length; i++) {
+                    d += "<div style='display:none;' id='row_"+data[i].name+"'>";
+                    d += "<span class='col-md-4'>"+data[i].name+"</span>";
+                    d += "<span class='col-md-4 hostname' id='"+data[i].name+"'></span>";
+                    d += "<span class='col-md-1'><button onclick=\"javascript:join_server('"+data[i].hostname+"')\" id='btn_"+data[i].name+"' style='display:none;' class='join btn btn-xs btn-success'>Join Game</button></span>";
+                    d += "</div><br>";
+                    checkStatus(data[i].hostname, data[i].name);
+                }
+                $('#servers').html(d);
+            },
+            error: function(e) {
+            }
+        });
+    }
+});
+</script>
+</body>
+</html>
+
