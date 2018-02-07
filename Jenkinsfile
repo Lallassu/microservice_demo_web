@@ -1,6 +1,14 @@
 node {
     def app
 
+      if (expression{ sh(returnStatus: 0, script:"docker service inspect webapp")}) {
+          echo "Performing rolling upgrade of service."
+      } else {
+          echo "Performing deploy of service."
+      }
+
+    return
+
     stage('Clone repository') {
         checkout scm
     }
