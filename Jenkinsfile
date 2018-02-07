@@ -20,7 +20,7 @@ node {
 
     stage('Run http test') {
         docker.withServer('unix:///var/run/docker.sock', '') {
-            docker.image('webapp:latest').withRun('-p 3000:3000') {c ->
+            docker.image("webapp:${env.BUILD_NUMBER}").withRun('-p 3000:3000') {c ->
                 sleep 3
                 sh "curl http://${env.HOST_IP}:3000 &> /dev/null"
             }
@@ -30,7 +30,6 @@ node {
   stage('Push image') {
         docker.withRegistry("https://${env.HOST_IP}:5000", '') {
             app.push("${env.BUILD_NUMBER}")
-            app.push("latest")
         }
     }
 
@@ -38,10 +37,10 @@ node {
       // Check if service runs, then perform rolling upgrade, else deploy.
       if (sh(returnStatus: true, script: "docker service inspect webapp") == 0) {
           echo "Performing rolling upgrade of service."
-          sh "docker service update --image ${env.HOST_IP}:5000/webapp:latest webapp"
+          sh "docker service update --image ${env.HOST_IP}:5000/webapp:${env.BUILD_NUMBER} webapp"
       } else {
           echo "Performing deploy of service."
-          sh "docker service create --replicas 5 -p 80:3000 --name webapp ${env.HOST_IP}:5000/webapp:latest"
+          sh "docker service create --replicas 2 -p 80:3000 --name webapp ${env.HOST_IP}:5000/webapp:${env.BUILD_NUMBER}"
       }
   }
 
