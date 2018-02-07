@@ -41,7 +41,7 @@ node {
           sh "docker service update --image ${env.HOST_IP}:5000/webapp:latest webapp"
       } else {
           echo "Performing deploy of service."
-          sh "docker service create --replicas 2 -p 80:3000 --name webapp ${env.HOST_IP}:5000/webapp:latest"
+          sh "docker service create --replicas 5 -p 80:3000 --name webapp ${env.HOST_IP}:5000/webapp:latest"
       }
   }
 
