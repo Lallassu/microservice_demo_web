@@ -3,6 +3,7 @@ class ImageController < ApplicationController
 
     def index
         @ip = `hostname`
+
         render 'index'
     end
 end
