@@ -1,7 +1,7 @@
 node {
     def app
 
-      if (expression {sh(returnStatus: 0, script:"docker service inspect webapp") == 0}) {
+      if (expression {sh(returnStatus: 0, script:"docker service inspect webapp") == 5}) {
           echo "Performing rolling upgrade of service."
       } else {
           echo "Performing deploy of service."
