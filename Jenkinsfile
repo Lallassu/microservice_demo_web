@@ -8,7 +8,6 @@ node {
     stage('Build image') {
         docker.withServer('unix:///var/run/docker.sock', '') {
           app = docker.build('webapp')
-          app.tag("${env.BUILD_NUMBER}")
         }
     }
 
