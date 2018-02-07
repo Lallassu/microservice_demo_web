@@ -1,6 +1,5 @@
 node {
     def app
-    echo "${environment.HOST_IP}"
     echo "${env.HOST_IP}"
     echo "${withEnv.HOST_IP}"
     sh 'echo ${HOST_IP}'
