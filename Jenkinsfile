@@ -1,6 +1,11 @@
 node {
     def app
-    env.HOST_IP = 'sh "echo ${HOST_IP}"'
+    env.HOST_IP = ${HOST_IP}
+    echo "${HOST_IP}"
+    echo "${env.HOST_IP}"
+    sh 'echo ${HOST_IP}'
+    sh 'env'
+
 
     stage('Clone repository') {
         sh "echo '${env.HOST_IP}'"
