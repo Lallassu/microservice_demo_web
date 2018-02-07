@@ -1,14 +1,6 @@
 node {
     def app
 
-      if (sh(returnStatus: true, script:"docker service inspect webapp") == 0) {
-          echo "Performing rolling upgrade of service."
-      } else {
-          echo "Performing deploy of service."
-      }
-
-    return
-
     stage('Clone repository') {
         checkout scm
     }
@@ -44,7 +36,7 @@ node {
 
   stage('Deploy To Swarm') {
       // Check if service runs, then perform rolling upgrade, else deploy.
-      if (expression{ sh(returnStatus: 0, script: "curl http://${env.HOST_IP} &> /dev/null")}) {
+      if (sh(returnStatus: true, script: "docker service inspect webapp") == 0) {
           echo "Performing rolling upgrade of service."
           sh "docker service update --image ${env.HOST_IP}:5000/webapp:latest webapp"
       } else {
