@@ -33,4 +33,13 @@ node {
             app.push("latest")
         }
     }
+
+  stage('Deploy To Swarm') {
+      sh "docker service create --replicas 2 -p 80:3000 --name webapp webapp:latest"
+  }
+
+  stage('Verify Deployment') {
+    sh 'curl http://${env.HOST_ip}/ &> /dev/null'
+  }
+
 }
