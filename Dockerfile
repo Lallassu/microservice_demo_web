@@ -8,4 +8,4 @@ RUN apt update -y && \
     gem install bundle && \
     bundle install
 
-CMD /webapp/bin/rails s
+CMD /webapp/bin/rails s -b 0.0.0.0
