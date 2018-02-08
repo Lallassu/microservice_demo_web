@@ -1,5 +1,8 @@
 Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
+    require 'socket'
+    require 'ipaddr'
+    config.web_console.whitelisted_ips = ['10.0.0.0/8', '172.16.0.0/12', '192.168.0.0/16']
 
   # Code is not reloaded between requests.
   config.cache_classes = true
