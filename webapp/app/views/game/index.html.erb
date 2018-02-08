@@ -65,7 +65,7 @@ h4 {
 
 <div class="container">
     <h1>BadSanta </h1>
-        <p>served by docker container:<span style="color: #000000;"> <%= @ip %></span></small></p>
+        <p>served by container:<span style="color: #000000;"> <%= @ip %></span></small></p>
     <div class="row marketing">
         <div class="col-lg-6">
             <h2 class="page-header">Login</h2>
@@ -105,6 +105,7 @@ h4 {
                         <th>Deaths</th>
                         <th>Created</th>
                         <th>Last Played</th>
+                        <th>Created by Container</th>
                     </tr>
                 </thead>
                 <tbody id="toplist">
@@ -196,6 +197,7 @@ $(document).ready(function() {
                     d += "<td style='color: #FF0000;'>"+data[i].deaths+"</td>";
                     d += "<td>"+data[i].created+"</td>";
                     d += "<td>"+data[i].last_played+"</td>";
+                    d += "<td>"+data[i].created_on+"</td>";
                     d += "</tr>";
                 }
                 $("#toplist").html(d);
@@ -220,12 +222,12 @@ $(document).ready(function() {
                     return;
                 }
                 for(var i = 0; i < data.length; i++) {
-                    d += "<div style='display:none;' id='row_"+data[i].name+"'>";
+                    d += "<div style='' id='row_"+data[i].name+"'>";
                     d += "<span class='col-md-4'>"+data[i].name+"</span>";
-                    d += "<span class='col-md-4 hostname' id='"+data[i].name+"'></span>";
-                    d += "<span class='col-md-1'><button onclick=\"javascript:join_server('"+data[i].hostname+"')\" id='btn_"+data[i].name+"' style='display:none;' class='join btn btn-xs btn-success'>Join Game</button></span>";
+                    d += "<span class='col-md-4 hostname' id='"+data[i].hostname+"'>"+data[i].hostname+"</span>";
+                    d += "<span class='col-md-1'>"+data[i].last_seen+"</span>";
+                    d += "<span class='col-md-1'><button onclick=\"javascript:join_server('"+data[i].hostname+"')\" id='btn_"+data[i].name+"' style='display:;' class='join btn btn-xs btn-success'>Join Game</button></span>";
                     d += "</div><br>";
-                    checkStatus(data[i].hostname, data[i].name);
                 }
                 $('#servers').html(d);
             },
