@@ -225,7 +225,7 @@ $(document).ready(function() {
                     d += "<div style='' id='row_"+data[i].name+"'>";
                     d += "<span class='col-md-4'>"+data[i].name+"</span>";
                     d += "<span class='col-md-4 hostname' id='"+data[i].hostname+"'>"+data[i].hostname+"</span>";
-                    d += "<span class='col-md-1'>"+data[i].last_seen+"</span>";
+                    d += "<span class='col-md-1'>(last seen: "+data[i].last_seen+" sec)</span>";
                     d += "<span class='col-md-1'><button onclick=\"javascript:join_server('"+data[i].hostname+"')\" id='btn_"+data[i].name+"' style='display:;' class='join btn btn-xs btn-success'>Join Game</button></span>";
                     d += "</div><br>";
                 }
