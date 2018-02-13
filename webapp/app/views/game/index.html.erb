@@ -90,9 +90,18 @@ h4 {
 
         <div class="col-lg-6">
             <h2 class="page-header">Servers</h2>
-            <div id="servers">
-                
-            </div>
+            <table class="table table-condensed">
+                <thead>
+                    <tr>
+                        <th>Server Name</th>
+                        <th>Hostname</th>
+                        <th>Last Seen</th>
+                    </tr>
+                </thead>
+                <tbody id="servers">
+                </tbody>
+            </table>
+            <span class='col-md-1'><button onclick="javascript:join_server()" id="join_button" style="margin-top: 20px; display: none;" class='join btn btn-lg btn-success'>Join Game</button></span>
         </div>
         <div class="col-lg-12">
             <h2 class="page-header">Top 20 Naughty Santas</h2>
@@ -118,6 +127,7 @@ h4 {
 
 </div> <!-- /container -->
 <script>
+var server_addr = "";
 function logout() {
     delete window.localStorage["p"]
     delete window.localStorage["u"]
@@ -129,10 +139,11 @@ function logout() {
     $('.join').each(function() {
         $(this).hide();
     });
+    $('#join_button').hide();
 }
 
-function join_server(hostname) {
-    window.location = "http://"+hostname+"?id="+$("#player_id").text();
+function join_server() {
+    window.location = "http://"+server_addr+"?id="+$("#player_id").text();
 }
 
 function login() {
@@ -159,6 +170,7 @@ function login() {
                 $('.join').each(function() {
                     $(this).show();
                 });
+                $('#join_button').show();
             } else {
                 $("#login_error").html("Failed to login.");
                 $("#login_error").show();
@@ -217,19 +229,24 @@ $(document).ready(function() {
             type: "GET",
             url: "servers",
             success: function(data) {
-                var d = "";
                 if (!data) {
                     return;
                 }
+                var d = "";
                 for(var i = 0; i < data.length; i++) {
-                    d += "<div style='' id='row_"+data[i].name+"'>";
-                    d += "<span class='col-md-4'>"+data[i].name+"</span>";
-                    d += "<span class='col-md-4 hostname' id='"+data[i].hostname+"'>"+data[i].hostname+"</span>";
-                    d += "<span class='col-md-1'>"+data[i].last_seen+"</span>";
-                    d += "<span class='col-md-1'><button onclick=\"javascript:join_server('"+data[i].hostname+"')\" id='btn_"+data[i].name+"' style='display:;' class='join btn btn-xs btn-success'>Join Game</button></span>";
-                    d += "</div><br>";
+                   // d += "<div style='' id='row_"+data[i].name+"'>";
+                   // d += "<span class='col-md-4'>"+data[i].name+"</span>";
+                   // d += "<span class='col-md-4 hostname' id='"+data[i].hostname+"'>"+data[i].hostname+"</span>";
+                   // d += "<span class='col-md-1'>"+data[i].last_seen+"</span>";
+                   // d += "</div><br>";
+                    d += "<tr><td>"+data[i].name+"</td>";
+                    d += "<td>"+data[i].hostname+"</td>";
+                    d += "<td>"+data[i].last_seen+"</td>";
+                    d += "</tr>";
                 }
                 $('#servers').html(d);
+                // All are same since we use LB
+                server_addr = data[0].hostname;
             },
             error: function(e) {
             }
