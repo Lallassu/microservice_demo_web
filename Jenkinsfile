@@ -37,7 +37,7 @@ node {
       // Check if service runs, then perform rolling upgrade, else deploy.
       if (sh(returnStatus: true, script: "docker service inspect webapp") == 0) {
           echo "Performing rolling upgrade of service."
-          sh "docker service update --end-add HOST_IP=${env.HOST_IP} --image ${env.HOST_IP}:5000/webapp:${env.BUILD_NUMBER} webapp"
+          sh "docker service update --env-add HOST_IP=${env.HOST_IP} --image ${env.HOST_IP}:5000/webapp:${env.BUILD_NUMBER} webapp"
       } else {
           echo "Performing deploy of service."
           sh "docker service create -e HOST_IP=${env.HOST_IP} --replicas 2 -p 80:3000 --name webapp ${env.HOST_IP}:5000/webapp:${env.BUILD_NUMBER}"
